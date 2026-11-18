@@ -1,0 +1,17 @@
+name: Validate workflow installer
+on:
+  push:
+    branches: [validate-workflow-installer]
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned YAMLScript
+        run: make -C .github/workflows install-ys
+      - name: Generate all workflows
+        run: make -C .github/workflows force build
+      - name: Verify generated workflows
+        run: git diff --exit-code -- '.github/workflows/*.yml'
